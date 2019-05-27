@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     flight *tempf;
     tempf = loadFlight(strLine);
     add_airports(aqptr, tempf);
-    enqueue(qptr, tempf);
+    enqueue(qptr, tempf, 0);
     fgets(strLine, 30, fp);
   }
 
@@ -38,8 +38,9 @@ int main(int argc, char *argv[])
   {
     sim_take_off(t, aqptr);
     sim_landing(t, aqptr);
-    sim_enroute(t, aqptr);
-    sim_output(t, aqptr);
+    // sim_enroute(t, aqptr);
+    // sim_output(t, aqptr);
+    take_turns(t, aqptr);
     if (t == 1440)
     {
       break;
@@ -57,8 +58,7 @@ int main(int argc, char *argv[])
     total += add->enrouteQueue->count;
     total += add->waitingQueue->count;
     add=add->next;
-  }
-  
+  }  
 
   fclose(fp);
 

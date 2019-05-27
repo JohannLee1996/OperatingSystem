@@ -106,7 +106,7 @@ void add_flight_to_depart(airqueue *aqptr, queue *qptr)
     {
         tempf = dequeue(qptr);
         tempa = find(aqptr, tempf->O);
-        enqueue(tempa->waitingQueue, tempf);
+        enqueue(tempa->waitingQueue, tempf, 1);
     }
 }
 
@@ -120,11 +120,11 @@ void sim_take_off(int t, airqueue *aqptr)
         {
             if (tempf->time == t)
             {
-                enqueue(ap->takingoffQueue, dequeue(ap->waitingQueue));
+                enqueue(ap->takingoffQueue, dequeue(ap->waitingQueue), 1);
+                tempf = ap->waitingQueue->front;
             }
             else
                 break;
-            tempf = ap->waitingQueue->front;
         }
         ap = ap->next;
     }
@@ -142,54 +142,73 @@ void sim_landing(int t, airqueue *aqptr)
             if (tempf->estimate_time == t)
             {
                 desap = find(aqptr, tempf->D);
-                enqueue(desap->landingQueue, dequeue(ap->enrouteQueue));
+                enqueue(desap->landingQueue, dequeue(ap->enrouteQueue), 0);
+                tempf = ap->enrouteQueue->front;
             }
             else
                 break;
-            tempf = ap->enrouteQueue->front;
         }
         ap = ap->next;
     }
 }
 
-void sim_enroute(int t, airqueue *aqptr)
+void sim_enroute(int t, airport *ap)
+{
+    if (ap->takingoffQueue->count != 0)
+    {
+        flight *tempf = dequeue(ap->takingoffQueue);
+        tempf->depart_time = t;
+        tempf->estimate_time = tempf->depart_time + tempf->T;
+        enqueue(ap->enrouteQueue, tempf, 0);
+    }
+}
+
+void sim_output(int t, airport *ap)
+{
+    flight *tempf = dequeue(ap->landingQueue);
+    tempf->landing_time = t;
+    int h = t / 60;
+    int m = t - 60 * h;
+    tempf->delay = tempf->landing_time - tempf->depart_time - tempf->T;
+    printf("[%02d:%02d] %s %d from %s to %s, departed %02d:%02d, delay %d\n", h, m, tempf->C, tempf->N, tempf->O, tempf->D, tempf->H, tempf->M, tempf->delay);
+}
+
+void take_turns(int t, airqueue *aqptr)
 {
     airport *ap = aqptr->front;
     while (ap != NULL)
     {
-        if (ap->takingoffQueue->count != 0)
+        // if (ap->takingoffQueue->count)
+        //     sim_enroute(t, ap);
+        // if (ap->landingQueue->count)
+        //     sim_output(t, ap);
+        if (ap->takingoffQueue->count * ap->landingQueue->count)
         {
-            flight *tempf = dequeue(ap->takingoffQueue);
-            tempf->depart_time = t;
-            tempf->estimate_time = tempf->depart_time + tempf->T;
-            enqueue(ap->enrouteQueue, tempf);
+            if (ap->flag == 1 || ap->flag == 0)
+            {
+                sim_output(t, ap);
+                ap->flag = 1;
+            }
+            if (ap->flag == 2)
+            {
+                sim_enroute(t, ap);
+                ap->flag = 1;
+            }
+        }
+        else if (ap->takingoffQueue->count)
+        {
+            sim_enroute(t, ap);
+            ap->flag = 1;
+        }
+        else if (ap->landingQueue->count)
+        {
+            sim_output(t, ap);
+            ap->flag = 2;
         }
         else
         {
-            break;
+            //do nothing
         }
-        ap = ap->next;
-    }
-}
-
-void sim_output(int t, airqueue *aqptr)
-{
-    airport *ap = aqptr->front;
-    while (ap != NULL)
-    {
-        if (ap->landingQueue->count != 0)
-        {
-            flight *tempf = dequeue(ap->landingQueue);
-            tempf->landing_time = t;
-            int h = t / 60;
-            int m = t - 60 * h;
-            tempf->delay = tempf->landing_time - tempf->depart_time - tempf->T;
-            printf("[%02d:%02d] %s %d from %s to %s, departed %02d:%02d, delay %d\n", h, m, tempf->C, tempf->N, tempf->O, tempf->D, tempf->H, tempf->M, tempf->delay);
-        }
-        // else
-        // {
-        //     break;
-        // }
         ap = ap->next;
     }
 }

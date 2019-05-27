@@ -54,19 +54,31 @@ void insertafter(queue *q, flight *f1, flight *f)
     }
 }
 
-void enqueue(queue *q, flight *f)
+void enqueue(queue *q, flight *f, int istakingoff)
 {
     if (!isempty(q))
     {
+        int tf = 0;
+        int tt = 0;
         flight *temp = q->front;
+
         while (temp != NULL)
         {
-            if (f->time < temp->time)
+            if(istakingoff){
+            tf = f->time;
+            tt = temp->time;
+        }
+        else{
+            tf = f->estimate_time;
+            tt = temp->estimate_time;
+        }
+        
+            if (tf < tt)
             {
                 insertbefore(q, temp, f);
                 break;
             }
-            else if (f->time > temp->time)
+            else if (tf > tt)
             {
                 if (temp->next == NULL)
                 {

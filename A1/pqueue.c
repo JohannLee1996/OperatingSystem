@@ -99,7 +99,7 @@ void enqueue(queue *q, flight *f, int istakingoff)
                 {
                     if (strcmp(f->C, temp->C) == 0)
                     {
-                        if (f->N < temp->N)
+                        if (f->N <= temp->N)
                         {
                             insertbefore(q, temp, f);
                             break;
@@ -122,7 +122,7 @@ void enqueue(queue *q, flight *f, int istakingoff)
                     }
                 }
 
-                if (f->N < temp->N)
+                if (f->N <= temp->N)
                 {
                     insertbefore(q, temp, f);
                     break;

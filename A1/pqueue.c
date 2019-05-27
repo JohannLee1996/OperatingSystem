@@ -154,6 +154,8 @@ flight *loadFlight(char s[])
     f->time = f->H * 60 + f->M;
     f->depart_time = 0;
     f->estimate_time = 0;
+    f->landing_time = 0;
+    f->delay = 0;
 
     f->last = NULL;
     f->next = NULL;

@@ -21,6 +21,8 @@ struct flight{
   int time;
   int depart_time;
   int estimate_time;
+  int landing_time;
+  int delay;
   struct flight *last;
   struct flight *next;
 };

@@ -38,12 +38,27 @@ int main(int argc, char *argv[])
   {
     sim_take_off(t, aqptr);
     sim_landing(t, aqptr);
+    sim_enroute(t, aqptr);
+    sim_output(t, aqptr);
     if (t == 1440)
     {
       break;
     }
     t++;
   }
+
+  airport *add = aqptr->front;
+  int total = 0;
+  while (add!=NULL)
+  {
+    //printf("%d, %d, %d, %d\n",add->takingoffQueue->count,add->landingQueue->count,add->enrouteQueue->count,add->waitingQueue->count);
+    total += add->takingoffQueue->count;
+    total += add->landingQueue->count;
+    total += add->enrouteQueue->count;
+    total += add->waitingQueue->count;
+    add=add->next;
+  }
+  
 
   fclose(fp);
 

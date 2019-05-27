@@ -16,7 +16,7 @@
             "stopAtEntry": true,
             "cwd": "/Users/lijunhong/Projects/OperatingSystem/A1", // 调试程序时的工作目录
             "environment": [],
-            "externalConsole": false, // 调试时是否显示控制台窗口(目前为不显示)
+            "externalConsole": true, // 调试时是否显示控制台窗口(目前为不显示)
             "preLaunchTask": "atsim", //预先执行task.json
             "MIMode": "lldb" //MAC下的debug程序
         }

@@ -118,7 +118,7 @@ void sim_take_off(int t, airqueue *aqptr)
         flight *tempf = ap->waitingQueue->front;
         while (tempf != NULL)
         {
-            if (tempf->time == t)
+            if (tempf->time == t-10)
             {
                 enqueue(ap->takingoffQueue, dequeue(ap->waitingQueue), 1);
                 tempf = ap->waitingQueue->front;
@@ -163,33 +163,28 @@ void sim_enroute(int t, airport *ap)
     }
 }
 
-void sim_output(int t, airport *ap)
+void sim_output(int t, airport *ap, queue *qptr)
 {
     flight *tempf = dequeue(ap->landingQueue);
-    tempf->landing_time = t;
-    int h = t / 60;
-    int m = t - 60 * h;
-    tempf->delay = tempf->landing_time - tempf->depart_time - tempf->T;
-    printf("[%02d:%02d] %s %d from %s to %s, departed %02d:%02d, delay %d\n", h, m, tempf->C, tempf->N, tempf->O, tempf->D, tempf->H, tempf->M, tempf->delay);
+    tempf->landing_time = t+10;
+    tempf->delay = tempf->landing_time - tempf->time - tempf->T -20;
+    enqueue(qptr, tempf, 2);
+    //printf("[%02d:%02d] %s %d from %s to %s, departed %02d:%02d, delay %d.\n", h, m, tempf->C, tempf->N, tempf->O, tempf->D, tempf->H, tempf->M, tempf->delay);
 }
 
-void take_turns(int t, airqueue *aqptr)
+void take_turns(int t, airqueue *aqptr, queue *qptr)
 {
     airport *ap = aqptr->front;
     while (ap != NULL)
     {
-        // if (ap->takingoffQueue->count)
-        //     sim_enroute(t, ap);
-        // if (ap->landingQueue->count)
-        //     sim_output(t, ap);
         if (ap->takingoffQueue->count * ap->landingQueue->count)
         {
             if (ap->flag == 1 || ap->flag == 0)
             {
-                sim_output(t, ap);
-                ap->flag = 1;
+                sim_output(t, ap, qptr);
+                ap->flag = 2;
             }
-            if (ap->flag == 2)
+            else if (ap->flag == 2)
             {
                 sim_enroute(t, ap);
                 ap->flag = 1;
@@ -202,7 +197,7 @@ void take_turns(int t, airqueue *aqptr)
         }
         else if (ap->landingQueue->count)
         {
-            sim_output(t, ap);
+            sim_output(t, ap, qptr);
             ap->flag = 2;
         }
         else

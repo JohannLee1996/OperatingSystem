@@ -38,7 +38,7 @@ void insertbefore(queue *q, flight *f1, flight *f)
 
 void insertafter(queue *q, flight *f1, flight *f)
 {
-    if (f1!=q->rear)
+    if (f1 != q->rear)
     {
         f1->next->last = f;
         f->next = f1->next;
@@ -64,15 +64,22 @@ void enqueue(queue *q, flight *f, int istakingoff)
 
         while (temp != NULL)
         {
-            if(istakingoff){
-            tf = f->time;
-            tt = temp->time;
-        }
-        else{
-            tf = f->estimate_time;
-            tt = temp->estimate_time;
-        }
-        
+            if (istakingoff == 1)
+            {
+                tf = f->time;
+                tt = temp->time;
+            }
+            else if (istakingoff == 0)
+            {
+                tf = f->estimate_time;
+                tt = temp->estimate_time;
+            }
+            else if(istakingoff == 2)
+            {
+                tf = f->landing_time;
+                tt = temp->landing_time;
+            }
+
             if (tf < tt)
             {
                 insertbefore(q, temp, f);
@@ -88,12 +95,40 @@ void enqueue(queue *q, flight *f, int istakingoff)
             }
             else
             {
+                if (istakingoff == 2)
+                {
+                    if (strcmp(f->C, temp->C) == 0)
+                    {
+                        if (f->N < temp->N)
+                        {
+                            insertbefore(q, temp, f);
+                            break;
+                        }
+                        else
+                        {
+                            insertafter(q, temp, f);
+                            break;
+                        }
+                    }
+                    else if (strcmp(f->C, temp->C) < 0)
+                    {
+                        insertbefore(q, temp, f);
+                        break;
+                    }
+                    else if(strcmp(f->C, temp->C) > 0)
+                    {
+                        insertafter(q, temp, f);
+                        break;
+                    }
+                }
+
                 if (f->N < temp->N)
                 {
                     insertbefore(q, temp, f);
                     break;
                 }
             }
+
             if (temp->next == NULL)
             {
                 insertafter(q, temp, f);

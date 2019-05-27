@@ -38,27 +38,21 @@ int main(int argc, char *argv[])
   {
     sim_take_off(t, aqptr);
     sim_landing(t, aqptr);
-    // sim_enroute(t, aqptr);
-    // sim_output(t, aqptr);
-    take_turns(t, aqptr);
+    take_turns(t, aqptr, qptr);
     if (t == 1440)
     {
       break;
     }
     t++;
   }
-
-  airport *add = aqptr->front;
-  int total = 0;
-  while (add!=NULL)
+  flight *tempf = qptr->front;
+  while (tempf != NULL)
   {
-    //printf("%d, %d, %d, %d\n",add->takingoffQueue->count,add->landingQueue->count,add->enrouteQueue->count,add->waitingQueue->count);
-    total += add->takingoffQueue->count;
-    total += add->landingQueue->count;
-    total += add->enrouteQueue->count;
-    total += add->waitingQueue->count;
-    add=add->next;
-  }  
+    int h = (tempf->landing_time) / 60;
+    int m = (tempf->landing_time) - 60 * h;
+    printf("[%02d:%02d] %s %d from %s to %s, departed %02d:%02d, delay %d.\n", h, m, tempf->C, tempf->N, tempf->O, tempf->D, tempf->H, tempf->M, tempf->delay);
+    tempf = tempf->next;
+  }
 
   fclose(fp);
 

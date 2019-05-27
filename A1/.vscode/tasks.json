@@ -1,0 +1,31 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "airport",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "/Users/lijunhong/Downloads/李金峰/airport.c",
+                "-o",
+                "/Users/lijunhong/Downloads/李金峰/airport.out"
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "pqueue",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "/Users/lijunhong/Downloads/李金峰/pqueue.c",
+                "-o",
+                "/Users/lijunhong/Downloads/李金峰/pqueue.out"
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+    ]
+}

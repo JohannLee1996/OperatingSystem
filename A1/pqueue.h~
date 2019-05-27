@@ -1,0 +1,31 @@
+//
+//  pqueue.h
+//  JinfengLi
+//
+//  Created by LiJunhong on 2019-05-16.
+//  Copyright © 2019 LiJunhong. All rights reserved.
+//
+
+#ifndef pqueue_h
+#define pqueue_h
+
+#include <stdio.h>
+
+#endif /* pqueue_h */
+
+//#ifndef PQueue
+//#define PQueue
+//
+//struct PQueue
+//{
+//    char c[10];
+//    int n;
+//    int p;
+//    char o[3];
+//    int h;
+//    int m;
+//    int t;
+//    char d[3];
+//};
+//
+//#endif

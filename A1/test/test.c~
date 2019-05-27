@@ -1,0 +1,9 @@
+#include <stdio.h>
+
+int main(int argc, char *argv[]){
+  FILE *fp;
+  char temp = argv[0];
+  char temp2 = argv[1];
+  printf("%s",temp);
+  printf("%s",temp2);
+}

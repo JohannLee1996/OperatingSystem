@@ -9,6 +9,7 @@ airport *newairport(char name[])
 {
     airport *air = (airport *)malloc(sizeof(airport));
     strcpy(air->code, name);
+    air->flag = 0;
     air->takingoffQueue = newqueue();
     air->landingQueue = newqueue();
     air->enrouteQueue = newqueue();
@@ -117,7 +118,6 @@ void sim_take_off(int t, airqueue *aqptr)
         flight *tempf = ap->waitingQueue->front;
         while (tempf != NULL)
         {
-            tempf = ap->waitingQueue->front;
             if (tempf->time == t)
             {
                 enqueue(ap->takingoffQueue, dequeue(ap->waitingQueue));
@@ -130,48 +130,26 @@ void sim_take_off(int t, airqueue *aqptr)
     }
 }
 
-int main(int argc, char *argv[])
+void sim_landing(int t, airqueue *aqptr)
 {
-    FILE *fp;
-    char strLine[30];
-    queue *qptr;
-    airqueue *aqptr;
-
-    if ((fp = fopen(argv[1], "r")) == NULL)
+    airport *ap = aqptr->front;
+    while (ap != NULL)
     {
-        perror("fopen");
-        exit(0);
-    }
-
-    qptr = newqueue();
-    aqptr = newairqueue();
-
-    while (!feof(fp))
-    {
-        fgets(strLine, 30, fp);
-        if (strcmp(strLine, "end"))
+        flight *tempf = ap->enrouteQueue->front;
+        while (tempf != NULL)
         {
-            flight *tempf;
-            tempf = loadFlight(strLine);
-            add_airports(aqptr, tempf);
-            enqueue(qptr, tempf);
+            if (tempf->time == t)
+            {
+                enqueue(ap->landingQueue, dequeue(ap->enrouteQueue));
+            }
+            else
+                break;
+            tempf = ap->enrouteQueue->front;
         }
+        ap = ap->next;
     }
+}
 
-    add_flight_to_depart(aqptr, qptr);
+void sim_enroute(int t, airqueue *aqptr){
 
-    int t = 0;
-    while (1)
-    {
-        sim_take_off(t, aqptr);
-        if (t == 1440)
-        {
-            break;
-        }
-        t++;
-    }
-
-    fclose(fp);
-
-    return 0;
 }

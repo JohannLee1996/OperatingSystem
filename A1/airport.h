@@ -5,6 +5,7 @@
 
 struct airport{
     char code[4];
+    int flag;
     queue * takingoffQueue;
     queue * landingQueue;
     queue * enrouteQueue;

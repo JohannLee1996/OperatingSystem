@@ -1,2 +1,9 @@
-[11:20] AC 123 from YHZ to YYZ, departed 09:00, delay 0.
-[11:21] AC 321 from YHZ to YYZ, departed 09:00, delay 1.
+[09:20] AC 222 from YUL to YYZ, departed 08:00, delay 0.
+[10:20] AC 622 from YHZ to YYZ, departed 08:00, delay 0.
+[11:10] AC 223 from YYZ to YUL, departed 09:45, delay 5.
+[12:20] AC 122 from YEG to YYZ, departed 08:00, delay 0.
+[13:00] AC 224 from YUL to YYZ, departed 11:30, delay 10.
+[13:10] AC 623 from YYZ to YHZ, departed 10:40, delay 10.
+[16:00] AC 624 from YHZ to YYZ, departed 13:30, delay 10.
+[17:10] AC 123 from YYZ to YEG, departed 12:30, delay 20.
+[22:00] AC 124 from YEG to YYZ, departed 17:00, delay 40.

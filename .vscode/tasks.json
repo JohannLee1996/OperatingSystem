@@ -8,9 +8,9 @@
             "command": "gcc",
             "args": [
                 "-g",
-                "/Users/lijunhong/Projects/OperatingSystem/A1/airport.c",
+                "/Users/lijunhong/Projects/OperatingSystem/A2/airport.c",
                 "-o",
-                "/Users/lijunhong/Projects/OperatingSystem/A1/airport.out"
+                "/Users/lijunhong/Projects/OperatingSystem/A2/airport.out"
             ],
             "type": "shell",
             "problemMatcher": []
@@ -20,9 +20,9 @@
             "command": "gcc",
             "args": [
                 "-g",
-                "/Users/lijunhong/Projects/OperatingSystem/A1/pqueue.c",
+                "/Users/lijunhong/Projects/OperatingSystem/A2/pqueue.c",
                 "-o",
-                "/Users/lijunhong/Projects/OperatingSystem/A1/pqueue.out"
+                "/Users/lijunhong/Projects/OperatingSystem/A2/pqueue.out"
             ],
             "type": "shell",
             "problemMatcher": []
@@ -32,9 +32,9 @@
             "command": "gcc",
             "args": [
                 "-g",
-                "/Users/lijunhong/Projects/OperatingSystem/A1/atsim.c",
+                "/Users/lijunhong/Projects/OperatingSystem/A2/atsim.c",
                 "-o",
-                "/Users/lijunhong/Projects/OperatingSystem/A1/atsim.out"
+                "/Users/lijunhong/Projects/OperatingSystem/A2/atsim"
             ],
             "type": "shell",
             "problemMatcher": []

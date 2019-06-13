@@ -41,7 +41,8 @@ extern void atcprint(flight_t **flights, int size) {
   qsort(flights, size, sizeof(flight_t *), &compare);
 
   for (i = 0; i < size; i++) {
-    fprintf(stdout, "%s\n", format(buffer,flights[i]));
+    //fprintf(stdout, "%s\n", format(buffer,flights[i]));
+    printf("%s\n", format(buffer,flights[i]));
   }
 }
 

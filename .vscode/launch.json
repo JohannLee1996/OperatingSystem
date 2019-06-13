@@ -8,13 +8,13 @@
             "name": "(lldb) Launch", // 配置名称，将会在调试配置下拉列表中显示
             "type": "cppdbg", // 调试器类型：Windows表示器使用cppvsdbg；GDB和LLDB使用cppdbg。该值自动生成
             "request": "launch", // 调试方式
-            "program": "/Users/lijunhong/Projects/OperatingSystem/A1/atsim.out", // 要调试的程序（完整路径，支持相对路径）
+            "program": "/Users/lijunhong/Projects/OperatingSystem/A2/atsim", // 要调试的程序（完整路径，支持相对路径）
             "args": [
-                "/Users/lijunhong/Projects/OperatingSystem/A1/tests_1-2/test.18.in",
+                "/Users/lijunhong/Projects/OperatingSystem/A2/test.04.in",
             ], // 传递给上面程序的参数，没有参数留空即可
             // "stopAtEntry": false, // 是否停在程序入口点（即停在main函数开始）（目前为不停下）
             "stopAtEntry": true,
-            "cwd": "/Users/lijunhong/Projects/OperatingSystem/A1", // 调试程序时的工作目录
+            "cwd": "/Users/lijunhong/Projects/OperatingSystem/A2", // 调试程序时的工作目录
             "environment": [],
             "externalConsole": true, // 调试时是否显示控制台窗口(目前为不显示)
             "preLaunchTask": "atsim", //预先执行task.json

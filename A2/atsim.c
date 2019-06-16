@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
     } else if (!strcmp(airline, "end")) {
       break;
     } 
+    
     // fscanf(fp, "%s", airline);
     // if(!strcmp(airline, "end")){
     //   break;

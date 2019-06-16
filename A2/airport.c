@@ -9,7 +9,7 @@
 #define TIME2PRIO(t, f) ((t)*10000 + f->f_no)
 #define PRIO2TIME(p) ((p) / 10000)
 #define TAXI_TIME 10
-#define GROOM_TIME 29
+#define GROOM_TIME 30
 
 typedef struct airport airport_rec;
 struct airport
@@ -199,14 +199,14 @@ extern flight_t *airport_step(airport_t apt, int time)
   int prio;
   assert(orig);
 
-  pump_departures(orig, time);
-  pump_arrivals(orig, time);
-
   if (ready(orig->landed, time))
   {
     temp = pqueue_dequeue(orig->landed);
     set_status(temp->pid, 0);
   }
+
+  pump_departures(orig, time);
+  pump_arrivals(orig, time);
 
   incoming = ready(orig->landing, time);
   outgoing = ready(orig->takeoff, time);
@@ -225,6 +225,7 @@ extern flight_t *airport_step(airport_t apt, int time)
     prio = TIME2PRIO(time + TAXI_TIME + GROOM_TIME, incoming);
     flight_t *temp2 = malloc(sizeof(flight_t));
     temp2->pid = incoming->pid;
+    //temp2->f_no = incoming->f_no;
     pqueue_enqueue(orig->landed, prio, temp2);
     orig->takeoff_next = 1;
     complete = incoming;

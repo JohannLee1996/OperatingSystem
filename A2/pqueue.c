@@ -3,7 +3,6 @@
 #include <string.h>
 #include "pqueue.h"
 
-
 typedef struct node_ node;
 struct node_ {
   node *next;
@@ -16,7 +15,6 @@ struct qrec_ {
   node *head;
   node *tail;
 };
- 
 
 static node *freelist;
 

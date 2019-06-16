@@ -5,9 +5,9 @@
 #include <sys/errno.h>
 #include "atcprint.h"
 #include "airport.h"
-#include "atcprint.c"
-#include "airport.c"
-#include "pqueue.c"
+// #include "atcprint.c"
+// #include "airport.c"
+// #include "pqueue.c"
 
 #define ONE_DAY (24 * 60)
 
@@ -28,40 +28,41 @@ int main(int argc, char **argv) {
   flight_t **completed;
   flight_t *flight;
 
-  FILE *fp;
-  if ((fp = fopen(argv[1], "r")) == NULL)
-  {
-    perror("fopen");
-    exit(0);
-  }
+  // FILE *fp;
+  // if ((fp = fopen(argv[1], "r")) == NULL)
+  // {
+  //   perror("fopen");
+  //   exit(0);
+  // }
 
   while(1) {
-    // if (scanf("%s", airline) != 1) {
-    //   error("Unexpected scanf failure");
-    // } else if (!strcmp(airline, "end")) {
-    //   break;
-    // } 
-    fscanf(fp, "%s", airline);
-    if(!strcmp(airline, "end")){
+    if (scanf("%s", airline) != 1) {
+      error("Unexpected scanf failure");
+    } else if (!strcmp(airline, "end")) {
       break;
-    }
+    } 
+    // fscanf(fp, "%s", airline);
+    // if(!strcmp(airline, "end")){
+    //   break;
+    // }
  
     flight = malloc(sizeof(flight_t));
     assert(flight);
     memset(flight, 0, sizeof(flight_t));
 
-    // if ((scanf("%d", &flight->f_no) != 1) || (scanf("%d", &flight->pid) != 1) ||
-    //     (scanf("%s", origin) != 1) || (scanf("%d:%d", &hour, &minute) != 2) || 
-    //     (scanf("%d", &flight->length) != 1) || (scanf("%s", dest) != 1)) {
-    //   error("Unexpected scanf failure");
-    // }
-
-    if ((fscanf(fp, "%d", &flight->f_no) != 1) || (fscanf(fp, "%d", &flight->pid) != 1) ||
-        (fscanf(fp, "%s", origin) != 1) || (fscanf(fp, "%d:%d", &hour, &minute) != 2) || 
-        (fscanf(fp, "%d", &flight->length) != 1) || (fscanf(fp, "%s", dest) != 1)) {
+    if ((scanf("%d", &flight->f_no) != 1) || (scanf("%d", &flight->pid) != 1) ||
+        (scanf("%s", origin) != 1) || (scanf("%d:%d", &hour, &minute) != 2) || 
+        (scanf("%d", &flight->length) != 1) || (scanf("%s", dest) != 1)) {
       error("Unexpected scanf failure");
     }
+
+    // if ((fscanf(fp, "%d", &flight->f_no) != 1) || (fscanf(fp, "%d", &flight->pid) != 1) ||
+    //     (fscanf(fp, "%s", origin) != 1) || (fscanf(fp, "%d:%d", &hour, &minute) != 2) || 
+    //     (fscanf(fp, "%d", &flight->length) != 1) || (fscanf(fp, "%s", dest) != 1)) {
+    //   error("Unexpected scanf failure");
+    // }
   
+    status_check(flight->pid);
     strcpy(flight->airline, airline);
     flight->origin = airport_get(origin);
     flight->departure = 60 * hour + minute;

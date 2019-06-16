@@ -16,6 +16,14 @@ struct flight_ {
    int        completed;
 };
 
+typedef struct plane_ plane_t;
+struct plane_ {
+   plane_t *next;
+   int pid;
+   int status;
+};
+
+extern int status_check(int pid);
 extern airport_t airport_get(const char *name);
 extern void airport_schedule(flight_t *f);
 extern airport_t airport_next(airport_t a);

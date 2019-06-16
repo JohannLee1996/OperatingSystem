@@ -1,7 +1,6 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-
 typedef void *pqueue_t;
 
 extern pqueue_t pqueue_new();

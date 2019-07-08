@@ -1,0 +1,44 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "airport",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "/Users/lijunhong/Projects/OperatingSystem/A3/airport.c",
+                "-o",
+                "/Users/lijunhong/Projects/OperatingSystem/A3/airport.out"
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "pqueue",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "/Users/lijunhong/Projects/OperatingSystem/A3/pqueue.c",
+                "-o",
+                "/Users/lijunhong/Projects/OperatingSystem/A3/pqueue.out"
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "atsim",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "/Users/lijunhong/Projects/OperatingSystem/A3/atsim.c",
+                "-o",
+                "/Users/lijunhong/Projects/OperatingSystem/A3/atsim",
+                "-lpthread"
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+    ]
+}

@@ -6,6 +6,7 @@
 #include "airport.h"
 #include "atcprint.h"
 #include "pqueue.h"
+#include "pqueue.c"
 
 #define TIME2PRIO(t,f) ((t) * 10000 + f->f_no)
 #define PRIO2TIME(p)   ((p) / 10000)

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PREFIX=test
-TESTS='00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19'
+TESTS='00 01 02 03 04 05 06 07 08 09'
 PROG=runme.sh
 count=0
 DEBUG=0

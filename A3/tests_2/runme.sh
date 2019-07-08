@@ -6,9 +6,9 @@
 
 # Java implementation
 # Uncomment these line.
-#XSIM=XSim
-#if [ ! -e $XSIM.class ]; then
-#  javac $XSIM.java
+#SIM=ATCSim
+#if [ ! -e $SIM.class ]; then
+#  javac $SIM.java
 #fi
-#java $XSIM $1 $2 $3 $4
+#java $SIM $1 $2 $3 $4
 

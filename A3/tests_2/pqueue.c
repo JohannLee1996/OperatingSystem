@@ -98,13 +98,13 @@ extern void *pqueue_peek(pqueue_t q, int *prio) {
   qrec *qr = (qrec *)q;
   void *data = NULL;
 
-  //pthread_mutex_lock(&(qr->mutex));
+  // pthread_mutex_lock(&(qr->mutex));
   if (qr->head) {
     data = qr->head->data;
     if (prio) {
       *prio = qr->head->prio;
     }
   }
-  //pthread_mutex_unlock(&(qr->mutex));
+  // pthread_mutex_unlock(&(qr->mutex));
   return data;
 }

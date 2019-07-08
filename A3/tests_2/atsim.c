@@ -7,8 +7,8 @@
 #include <sys/errno.h>
 #include "atcprint.h"
 #include "airport.h"
-#include "atcprint.c"
-#include "airport2.c"
+// #include "atcprint.c"
+// #include "airport2.c"
 
 #define ONE_DAY (24 * 60)
 
@@ -17,7 +17,6 @@ int n = 0;
 flight_t **completed;
 int waiting = 0;
 static pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t mtx2 = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 static void error(char *err)
@@ -55,44 +54,43 @@ int main(int argc, char **argv)
   char dest[20];
   flight_t *flight;
 
-  FILE *fp;
-  if ((fp = fopen(argv[1], "r")) == NULL)
-  {
-    perror("fopen");
-    exit(0);
-  }
+  // FILE *fp;
+  // if ((fp = fopen(argv[1], "r")) == NULL)
+  // {
+  //   perror("fopen");
+  //   exit(0);
+  // }
 
   while (1)
   {
+      if (scanf("%s", airline) != 1) {
+        error("Unexpected scanf failure");
+      } else if (!strcmp(airline, "end")) {
+        break;
+      }
 
-    //   if (scanf("%s", airline) != 1) {
-    //     error("Unexpected scanf failure");
-    //   } else if (!strcmp(airline, "end")) {
-    //     break;
-    //   }
-
-    fscanf(fp, "%s", airline);
-    if (!strcmp(airline, "end"))
-    {
-      break;
-    }
+    // fscanf(fp, "%s", airline);
+    // if (!strcmp(airline, "end"))
+    // {
+    //   break;
+    // }
 
     flight = malloc(sizeof(flight_t));
     assert(flight);
     memset(flight, 0, sizeof(flight_t));
 
-    // if ((scanf("%d", &flight->f_no) != 1) || (scanf("%d", &flight->pid) != 1) ||
-    //     (scanf("%s", origin) != 1) || (scanf("%d:%d", &hour, &minute) != 2) ||
-    //     (scanf("%d", &flight->length) != 1) || (scanf("%s", dest) != 1)) {
-    //   error("Unexpected scanf failure");
-    // }
-
-    if ((fscanf(fp, "%d", &flight->f_no) != 1) || (fscanf(fp, "%d", &flight->pid) != 1) ||
-        (fscanf(fp, "%s", origin) != 1) || (fscanf(fp, "%d:%d", &hour, &minute) != 2) ||
-        (fscanf(fp, "%d", &flight->length) != 1) || (fscanf(fp, "%s", dest) != 1))
-    {
+    if ((scanf("%d", &flight->f_no) != 1) || (scanf("%d", &flight->pid) != 1) ||
+        (scanf("%s", origin) != 1) || (scanf("%d:%d", &hour, &minute) != 2) ||
+        (scanf("%d", &flight->length) != 1) || (scanf("%s", dest) != 1)) {
       error("Unexpected scanf failure");
     }
+
+    // if ((fscanf(fp, "%d", &flight->f_no) != 1) || (fscanf(fp, "%d", &flight->pid) != 1) ||
+    //     (fscanf(fp, "%s", origin) != 1) || (fscanf(fp, "%d:%d", &hour, &minute) != 2) ||
+    //     (fscanf(fp, "%d", &flight->length) != 1) || (fscanf(fp, "%s", dest) != 1))
+    // {
+    //   error("Unexpected scanf failure");
+    // }
 
     strcpy(flight->airline, airline);
     flight->origin = airport_get(origin);
@@ -116,10 +114,10 @@ int main(int argc, char **argv)
     {
       printf("Create thread fail!\n");
     }
-    else
-    {
-      printf("Thread created!\n");
-    }
+    // else
+    // {
+    //   printf("Thread created!\n");
+    // }
     iter++;
   }
 
@@ -127,7 +125,8 @@ int main(int argc, char **argv)
   // {
   //   pthread_join(my_thread[i], NULL);
   // }
-  sleep(2);
+  usleep(20000);
+  
 
   atcprint(completed, n);
   return 0;
@@ -138,14 +137,12 @@ static void run(airport_t apt)
   flight_t *flight;
   for (int i = 0; (n < num) && (i < ONE_DAY); i++) // barrier on i
   {
-    barrier();
     flight = airport_step(apt, i); // wait for all thread to complete at time i
     if (flight)
     {
       completed[n] = flight;
-      // pthread_mutex_lock(&mtx2);
       n++;
-      // pthread_mutex_unlock(&mtx2);
     }
+    barrier();
   }
 }

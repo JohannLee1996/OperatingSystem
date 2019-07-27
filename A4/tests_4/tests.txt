@@ -1,0 +1,10 @@
+00: 1 flight (basic case)
+01: 2 flights to different airports
+02: 2 flights to same airport, different landing times
+03: 2 flights to same airport, same landing time, diff flight times
+04: 2 flights to same airport, same landing time, same flight times
+05: 3 flights to same airport, same landing time, diff flight times
+06: 3 flights to same airport, same landing time, 2 diff flight times
+07: 3 flights to same airport, same landing time, same flight times
+08: 4 flights to opposite airports, same landing time, same flight times
+09: stress test 800 flights

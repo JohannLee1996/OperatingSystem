@@ -24,6 +24,8 @@ extern airport_t airport_next(airport_t a);
 extern flight_t *airport_step(airport_t a, int time);
 extern char *airport_name(airport_t a);
 extern int airport_comm(airport_t a);
+extern void set_inbox(airport_t *temp_ap, int mailbox_id);
+extern void set_response(airport_t *temp_ap, int mailbox_id);
 
 #endif
 

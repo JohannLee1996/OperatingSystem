@@ -1,0 +1,20 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "atsim",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "/Users/lijunhong/Projects/OperatingSystem/A4/atsim3.c",
+                "-o",
+                "/Users/lijunhong/Projects/OperatingSystem/A4/atsim",
+                "-lpthread"
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+    ]
+}

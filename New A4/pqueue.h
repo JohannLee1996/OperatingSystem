@@ -1,8 +1,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-
-typedef void *pqueue_t;
+#include <pthread.h>
 
 typedef struct node_ node;
 struct node_ {
@@ -17,6 +16,8 @@ struct qrec_ {
   node *tail;
   pthread_mutex_t lock;
 };
+
+typedef void *pqueue_t;
 
 extern pqueue_t pqueue_new();
 extern void pqueue_enqueue(pqueue_t q, int prio, void *data);

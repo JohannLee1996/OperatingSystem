@@ -3,7 +3,7 @@
 #include <string.h>
 #include <pthread.h>
 #include "pqueue.h"
-#include "utils.h"
+#include "utils.h" 
 
 static pthread_mutex_t free_lock = PTHREAD_MUTEX_INITIALIZER;
 static node *freelist;
@@ -106,7 +106,7 @@ extern void *pqueue_peek(pqueue_t q, int *prio) {
   return data;
 }
 
-extern int pqueue_size(pqueue_t q){
+extern int pqueue_size(pqueue_t q){// a new method used to get the size of queue
   int i = 0;
   node *nd;
   qrec *qr = (qrec *)q;
@@ -115,5 +115,3 @@ extern int pqueue_size(pqueue_t q){
   }
   return i;
 }
-
-

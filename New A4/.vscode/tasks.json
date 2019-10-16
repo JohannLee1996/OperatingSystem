@@ -1,0 +1,123 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "atsim3",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-g",
+                "-c",
+                "-o",
+                "atsim3.o",
+                "atsim3.c",
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "airport2",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-g",
+                "-c",
+                "-o",
+                "airport2.o",
+                "airport2.c",
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "atcprint",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-g",
+                "-c",
+                "-o",
+                "atcprint.o",
+                "atcprint.c",
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "pqueue3",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-g",
+                "-c",
+                "-o",
+                "pqueue3.o",
+                "pqueue3.c",
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "utils",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-g",
+                "-c",
+                "-o",
+                "utils.o",
+                "utils.c",
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "comm",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-g",
+                "-c",
+                "-o",
+                "comm.o",
+                "comm.c",
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "atsim",
+            "command": "gcc",
+            "args": [
+                "-Wall",
+                "-g",
+                "-o",
+                "/Users/lijunhong/Projects/OperatingSystem/New A4/atsim",
+                "/Users/lijunhong/Projects/OperatingSystem/New A4/atsim3.o",
+                "/Users/lijunhong/Projects/OperatingSystem/New A4/airport2.o",
+                "/Users/lijunhong/Projects/OperatingSystem/New A4/atcprint.o",
+                "/Users/lijunhong/Projects/OperatingSystem/New A4/pqueue3.o",
+                "/Users/lijunhong/Projects/OperatingSystem/New A4/utils.o",
+                "/Users/lijunhong/Projects/OperatingSystem/New A4/comm.o",
+                "-l",
+                "pthread",
+            ],
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "build",
+            "dependsOn": [
+                "atsim3",
+                "airport2",
+                "atcprint",
+                "pqueue3",
+                "utils",
+                "comm",
+                "atsim"
+            ]
+        }
+    ]
+}

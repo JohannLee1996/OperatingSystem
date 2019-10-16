@@ -1,6 +1,7 @@
 #ifndef AIRPORT_H
 #define AIRPORT_H
 
+
 typedef void *airport_t;
 typedef struct flight_ flight_t;
 struct flight_ {

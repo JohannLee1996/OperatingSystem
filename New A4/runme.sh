@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # default is a C implementation
 # Comment this out if in Java
@@ -6,9 +6,9 @@
 
 # Java implementation
 # Uncomment these line.
-#SIM=ATCSim
-#if [ ! -e $SIM.class ]; then
-#  javac $SIM.java
+#XSIM=XSim
+#if [ ! -e $XSIM.class ]; then
+#  javac $XSIM.java
 #fi
-#java $SIM $1 $2 $3 $4
+#java $XSIM $1 $2 $3 $4
 

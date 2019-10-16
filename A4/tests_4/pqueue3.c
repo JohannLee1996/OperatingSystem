@@ -115,5 +115,3 @@ extern int pqueue_size(pqueue_t q){
   }
   return i;
 }
-
-

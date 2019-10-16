@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "comm.c"
-#include "comm.h"
+#include <pthread.h>
 #include "airport.h"
 #include "atcprint.h"
 #include "pqueue.h"
-#include "pqueue3.c"
+#include "utils.h"
+#include "atsim3.h"
+#include "comm.h"
 
 #define TIME2PRIO(t, f) ((t)*10000 + f->f_no)
 #define PRIO2TIME(p) ((p) / 10000)
@@ -15,33 +16,10 @@
 #define GROOM_TIME 30
 #define MAX_PID 1000
 
-static int threads = 0;
-static volatile int waiting = 0;
-
-extern void barrier(void)
-{
-  static pthread_mutex_t b_lock = PTHREAD_MUTEX_INITIALIZER;
-  static pthread_cond_t cond_var = PTHREAD_COND_INITIALIZER;
-
-  lock(&b_lock);
-  waiting = (waiting + 1) % threads;
-  if (waiting)
-  {
-    if (pthread_cond_wait(&cond_var, &b_lock))
-    {
-      error("Failure to wait on lock!");
-    }
-  }
-  else if (pthread_cond_broadcast(&cond_var))
-  {
-    error("Failure to broadcast on lock!");
-  }
-  unlock(&b_lock);
-}
-
 typedef struct airport airport_rec;
 struct airport
 {
+  pthread_mutex_t record_lock;
   airport_rec *next;
   char name[20];
   pqueue_t *scheduled;
@@ -49,10 +27,10 @@ struct airport
   pqueue_t *enroute;
   pqueue_t *landing;
   pqueue_t *grooming;
-  pqueue_t *suspending;
   flight_t *blocked;
-  int inbox;
-  int response;
+  int inbox;// inbox id
+  int response;//response inbox id
+  int record[1440];//record free time in a day
   int takeoff_next;
 };
 
@@ -60,6 +38,18 @@ static airport_rec IN_USE[1];
 static airport_rec *airports;
 static airport_rec *plane_loc[MAX_PID];
 static int num_airports;
+
+extern void set_inbox(airport_t *temp_ap, int mailbox_id)//used to set inbox id to an airport
+{
+  airport_rec *ap = (airport_rec *)temp_ap;
+  ap->inbox = mailbox_id;
+}
+
+extern void set_response(airport_t *temp_ap, int mailbox_id)//used to set response inbox id to an airport
+{
+  airport_rec *ap = (airport_rec *)temp_ap;
+  ap->response = mailbox_id;
+}
 
 static airport_rec *find(const char *name)
 {
@@ -87,34 +77,27 @@ extern airport_t airport_get(const char *name)
     assert(a);
     memset(a, 0, sizeof(airport_rec));
     strcpy(a->name, name);
+    if (pthread_mutex_init(&a->record_lock, NULL))
+    {
+      error("Could not initialize mutex lock");
+    }
     a->scheduled = pqueue_new();
     a->takeoff = pqueue_new();
     a->enroute = pqueue_new();
     a->landing = pqueue_new();
     a->grooming = pqueue_new();
-    a->suspending = pqueue_new();
     a->takeoff_next = 0;
     a->next = airports;
-    a->inbox = 0;
-    a->response = 0;
+    a->inbox = 0;// initialize to 0
+    a->response = 0;// initialize to 0
+    for (int i = 0; i < 1440; i++)
+    {
+      a->record[i] = 0;//initialize all time to 0
+    }
     airports = a;
     num_airports++;
   }
   return a;
-}
-
-extern void set_inbox(airport_t *temp_ap, int mailbox_id)
-{
-  airport_rec *ap = (airport_rec *)temp_ap;
-  ap->inbox = mailbox_id;
-  // printf("inbox set to %d.\n", ap->inbox);
-}
-
-extern void set_response(airport_t *temp_ap, int mailbox_id)
-{
-  airport_rec *ap = (airport_rec *)temp_ap;
-  ap->response = mailbox_id;
-  // printf("response set to %d.\n", ap->response);
 }
 
 extern int airport_num()
@@ -188,31 +171,37 @@ static flight_t *unblock(airport_rec *apt, int pid)
   return f;
 }
 
-static void send_msg(flight_t *f)
+static void send_request(flight_t *f, int time)//create msg and send it to an airport
 {
   airport_rec *dest;
   airport_rec *orig;
   dest = (airport_rec *)f->destination;
+  orig = (airport_rec *)f->origin;
   my_msg_r *new_msg;
   new_msg = malloc(sizeof(my_msg_r));
   new_msg->from = orig->response;
   new_msg->to = dest->inbox;
-  new_msg->time = time + 10 + f->length;
+  new_msg->time = time + f->length;
+  new_msg->prio = 1000 * time + f->f_no;//here is the prio
   comm_send(new_msg->to, (void *)new_msg);
+}
+
+static void send_response(my_msg_r *in_msg, int grant)//used to response a request
+{
+  my_resp_r *resp;
+  resp = malloc(sizeof(my_resp_r));
+  resp->grant = grant;
+  comm_send(in_msg->from, (void *)resp);
 }
 
 static void pump_departures(airport_rec *apt, int time)
 {
   flight_t *f;
 
-  while (ready(apt->scheduled, time))
+  if (ready(apt->scheduled, time))
   {
-    int prio;
-    f = pqueue_peek(apt->scheduled, &prio);
-    send_msg(f);
-    // barrier();
-
     f = pqueue_dequeue(apt->scheduled);
+
     if ((plane_loc[f->pid] != NULL) && (plane_loc[f->pid] != apt))
     {
       block(apt, f);
@@ -248,8 +237,6 @@ static void pump_arrivals(airport_rec *apt, int time)
   }
 }
 
-
-
 extern flight_t *airport_step(airport_t apt, int time)
 {
   airport_rec *orig = (airport_rec *)apt;
@@ -266,41 +253,48 @@ extern flight_t *airport_step(airport_t apt, int time)
   incoming = ready(orig->landing, time);
   outgoing = ready(orig->takeoff, time);
 
-  barrier();
-  my_msg_r *in_msg;
-  in_msg = (my_msg_r *)comm_recv_any(orig->inbox);
-  if (in_msg)
+  if (outgoing)
   {
-    my_resp_r *new_resp;
-    new_resp = malloc(sizeof(my_resp_r));
-    if (ready(orig->scheduled, in_msg->time))
+    send_request(outgoing, time);//before take off, send request to dest airport
+  }
+  barrier();
+
+  my_msg_r *in_msg = NULL;
+
+  for (in_msg = (my_msg_r *)comm_recv_any(orig->inbox); in_msg; in_msg = (my_msg_r *)comm_recv_any(orig->inbox))
+  {// handle every msg in inbox and give response
+    pthread_mutex_lock(&orig->record_lock);
+    if (orig->record[in_msg->time] == 0)//time slot is free
     {
-      //not free
-      new_resp->grant = 0;
-      comm_send(in_msg->from, (void *)new_resp);
+      send_response(in_msg, 1);
+      orig->record[in_msg->time] = 1;
     }
-    else
+    else//time slot is not free
     {
-      //free
-      new_resp->grant = 1;
-      comm_send(in_msg->from, (void *)new_resp);
+      send_response(in_msg, 0);
+    }
+    pthread_mutex_unlock(&orig->record_lock);
+  }
+  barrier();
+
+  my_resp_r *in_resp = NULL;
+  in_resp = (my_resp_r *)comm_recv_any(orig->response);//get response from dest
+  int grant = 0;
+  if (in_resp)
+  {
+    if (in_resp->grant)
+    {
+      grant = 1;//get permission to take off
     }
   }
 
-  barrier();
-
-  if (outgoing && (orig->takeoff_next || !incoming))
+  if (grant && outgoing && (orig->takeoff_next || !incoming))//only when there is a permission can the plane take off
   {
-    my_resp_r *resp;
-    resp = (my_resp_r *)comm_recv_any(orig->response);
-    if (resp->grant)
-    {
-      pqueue_dequeue(orig->takeoff);
-      orig->takeoff_next = 0;
-
-      prio = TIME2PRIO(time + outgoing->length, outgoing);
-      pqueue_enqueue(dest->enroute, prio, outgoing);
-    }
+    pqueue_dequeue(orig->takeoff);
+    orig->takeoff_next = 0;
+    dest = (airport_rec *)outgoing->destination;
+    prio = TIME2PRIO(time + outgoing->length, outgoing);
+    pqueue_enqueue(dest->enroute, prio, outgoing);
   }
   else if (incoming)
   {
